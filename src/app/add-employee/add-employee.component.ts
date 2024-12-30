@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { EmployeeService } from '../employee.service';
 import { Router } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
+import { environment } from 'src/environments/environment.prod';
 
 
 
@@ -33,7 +34,7 @@ export class AddEmployeeComponent //implements OnInit//
  
 
   submitform!: NgForm;
-  private baseURL = "http://localhost:8086/api/v1/employees";
+    private baseURL = `${environment.apiUrl}/api/v1/employees`;
   employee: Employee = new Employee();
   
 

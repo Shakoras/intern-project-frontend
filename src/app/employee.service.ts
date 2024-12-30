@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
 import { Employee } from './employee';
+import { environment } from 'src/environments/environment.prod';
 
 
 @Injectable({
@@ -11,8 +12,8 @@ import { Employee } from './employee';
 export class EmployeeService {
 
 
- 
-  private baseURL = "http://localhost:8086/api/v1/employees";
+  private baseURL = `${environment.apiUrl}/api/v1/employees`;
+
 
   constructor(private httpClient: HttpClient) { }
   
