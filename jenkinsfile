@@ -9,6 +9,9 @@ pipeline {
                 git url: 'git@github.com:Shakoras/intern-project-frontend.git',
                     credentialsId: 'your-git-credentials-id',
                     branch: 'main'
+   script {
+            env.GIT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
+        }
             }
         }
         stage('Install dependencies') {
@@ -29,7 +32,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh 'docker build -t your-dockerhub-username/your-frontend-repo:${GIT_COMMIT} .'
+                    sh 'docker build -t shakoras/frontend:${GIT_COMMIT} .'
                 }
             }
         }
@@ -41,7 +44,7 @@ pipeline {
                     echo 'Pushing Image to DockerHub...'
                     sh '''
                         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                        docker push your-dockerhub-username/your-frontend-repo:${GIT_COMMIT}
+                        docker push shakoras/frontend:${GIT_COMMIT}
                     '''
                 }
             }
@@ -51,7 +54,7 @@ pipeline {
                 script {
                     if (params.DEPLOYMENT_METHOD == 'Docker Compose') {
                         echo 'Deploying Frontend locally with Docker Compose...'
-                        sh 'docker-compose -f docker-compose-frontend.yml up -d'
+                        sh 'docker-compose -f docker-compose.yml up -d'
                     } else if (params.DEPLOYMENT_METHOD == 'Kubernetes') {
                         echo 'Deploying Frontend to Kubernetes...'
                         sh '''
