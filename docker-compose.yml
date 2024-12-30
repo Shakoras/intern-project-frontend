@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  backend:
+    image: shakoras/springbootapp-devopsproject
+    ports:
+      - "8086:8080" 
+    networks:
+      - app-network
+  frontend:
+    image: shakoras/frontend
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
