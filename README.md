@@ -1,27 +1,57 @@
-# Frontend
+# Project Name
+Internship application frontend 
+## Overview
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.11.
+This project is a Spring Boot and Angular application that utilizes Docker for deployment. This README explains the environment variables used in the Jenkins pipeline and their purposes for the frontend.
 
-## Development server
+## Environment Variables
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+The following environment variables are defined for use in the Jenkins pipeline:
 
-## Code scaffolding
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+### Docker Compose Variables
 
-## Build
+- **`dbuild`**
+    - **Description**: Command to build Docker images using Docker Compose.
+    - **Example**: `"docker-compose build"`
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+- **`dup`**
+    - **Description**: Command to start the Docker containers in detached mode.
+    - **Example**: `"docker-compose up"`
 
-## Running unit tests
+- **`dup_d`**
+    - **Description**: Command to start the Docker containers in detached mode.
+    - **Example**: `"docker-compose up -d"`
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+- **`ddown`**
+    - **Description**: Command to stop and remove the Docker containers.
+    - **Example**: `"docker-compose down"` (optional, if used)
+      
 
-## Running end-to-end tests
+## Notes
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
 
-## Further help
+**Docker Compose**: The dup_d variable starts containers in detached mode, freeing up the terminal for other tasks.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+**Terraform**: Ensure Terraform is installed and configured to manage Azure resources.
+
+**Kubernetes**: Verify kubectl is configured to interact with the AKS cluster.
+
+## Usage
+
+To run the Jenkins pipeline, ensure the environment variables are correctly set in the Jenkins job configuration. Each variable plays a role in the build and deployment process:
+
+1. **Checkout**: The code is pulled from the specified Git repository.
+2. **Install Dependencies**: Maven compiles the project.
+3. **Run Tests**: Maven runs the unit tests.
+4. **Build Application**: Maven packages the application as a JAR file.
+5. **Building Docker Images**: Docker images are built using the specified `dbuild` command.
+6. **Provision Resources with Terraform**: Uses Terraform to set up resources in Azure.
+7. **Deploy to Ubuntu VM**: The Docker containers are started using the `dup_d` command in detached mode (`-d` option starts the containers in the background, allowing your terminal to be free for other tasks).
+8. **Deploy to Microsoft Azure**: Deploys the application to Azure Kubernetes Service (AKS).
+
+
+
+## Conclusion
+
+This README provides an overview of the environment variables used in this project. For any questions or issues, please reach out to the project maintainers.
