@@ -68,6 +68,9 @@ pipeline {
                     sh '''
                         cd terraform
                         terraform init
+ # Import existing AKS cluster if it exists
+                terraform import azurerm_kubernetes_cluster.aks /subscriptions/${TF_VAR_subscription_id}/resourceGroups/DevopsProjectFrontendRg/providers/Microsoft.ContainerService/managedClusters/DevopsProjectFrontendAKSCluster || echo "AKS cluster already managed by Terraform or import failed"
+
                         terraform plan
                         terraform apply -auto-approve
                     '''
