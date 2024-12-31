@@ -26,7 +26,7 @@ pipeline {
 
         stage('Build Application') {
             steps {
-                sh 'ng build --prod'
+                sh 'npx ng build --prod'
             }
         }
         stage('Build Docker Image') {
