@@ -7,7 +7,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git url: 'git@github.com:Shakoras/intern-project-frontend.git',
-                    credentialsId: 'your-git-credentials-id',
+                    credentialsId: 'b0eadd19-a3e9-4405-9646-c0f37b8dee78',
                     branch: 'main'
    script {
             env.GIT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
@@ -54,13 +54,18 @@ pipeline {
                 script {
                     if (params.DEPLOYMENT_METHOD == 'Docker Compose') {
                         echo 'Deploying Frontend locally with Docker Compose...'
-                        sh 'docker-compose -f docker-compose.yml up -d'
+                        sh "${env.dup_d}"
+                        echo 'Local deployment is Successful!'
+
                     } else if (params.DEPLOYMENT_METHOD == 'Kubernetes') {
                         echo 'Deploying Frontend to Kubernetes...'
                         sh '''
                             kubectl apply -f k8s/deployment-frontend.yaml
                             kubectl apply -f k8s/service-frontend.yaml
                         '''
+                        echo 'Waiting for the application to be available...'
+                        sh 'kubectl rollout status deployment/frontend'
+                        echo 'Azure deployment is Successful!'
                     }
                 }
             }
