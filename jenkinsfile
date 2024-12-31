@@ -18,13 +18,19 @@ pipeline {
         }
         stage('Install dependencies') {
             steps {
-                sh 'npm install'
+               sh '''
+                    npm install -g @angular/cli
+                    npm install
+                '''
             }
         }
         stage('Run Tests') {
             steps {
-                sh 'ng test --watch=false --browsers=ChromeHeadless'
-            }
+                sh '''
+                    export PATH=$(npm bin -g):$PATH
+                    ng test --watch=false --browsers=ChromeHeadless
+                '''          
+}
         }
         stage('Build Application') {
             steps {
