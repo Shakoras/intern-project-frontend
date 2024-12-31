@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: frontend-service
   annotations:
-    service.beta.kubernetes.io/azure-load-balancer-resource-group: "MC_DevopsProjectRg_DevopsProjectAKSCluster_northeurope"
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
 spec:
   selector:
     app: frontend
@@ -12,5 +12,4 @@ spec:
       port: 80
       targetPort: 80
   type: LoadBalancer
-  loadBalancerIP: "7758102c-b67f-4818-b839-8203cabaf487"
 
