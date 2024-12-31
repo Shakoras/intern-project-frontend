@@ -29,7 +29,7 @@ The following environment variables are defined for use in the Jenkins pipeline:
       
 
 ## Notes
-
+**Please note that when using local deployment (docker-compose) a change must happen  to the apiurl environment variable that exists in the environment folder to localhost:8086 instead of the ip address used for Kubernetes**
 
 **Docker Compose**: The dup_d variable starts containers in detached mode, freeing up the terminal for other tasks.
 
