@@ -3,6 +3,10 @@ pipeline {
     parameters {
         choice(name: 'DEPLOYMENT_METHOD', choices: ['Docker Compose', 'Kubernetes'], description: 'Choose the deployment method.')
     }
+  environment {
+        TF_VAR_subscription_id = credentials('subscription_id')
+        TF_VAR_tenant_id = credentials('tenant_id')
+    }
     stages {
         stage('Checkout') {
             steps {
