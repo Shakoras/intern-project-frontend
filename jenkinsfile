@@ -9,9 +9,7 @@ pipeline {
                 git url: 'git@github.com:Shakoras/intern-project-frontend.git',
                     credentialsId: 'b0eadd19-a3e9-4405-9646-c0f37b8dee78',
                     branch: 'main'
-   script {
-            env.GIT_COMMIT = sh(script: 'git rev-parse HEAD', returnStdout: true).trim()
-        }
+   
             }
         }
         stage('Install dependencies') {
@@ -32,7 +30,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh 'docker build -t shakoras/frontend:${GIT_COMMIT} .'
+                    sh 'docker build -t shakoras/frontend:latest .'
                 }
             }
         }
@@ -44,8 +42,26 @@ pipeline {
                     echo 'Pushing Image to DockerHub...'
                     sh '''
                         echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                        docker push shakoras/frontend:${GIT_COMMIT}
+                        docker push shakoras/frontend:latest
                     '''
+                }
+            }
+        }
+
+       stage('Setup Azure Resources with Terraform') {
+            when {
+                expression { params.DEPLOYMENT_METHOD == 'Kubernetes' }
+            }
+            steps {
+                script {
+                    echo 'Initializing and applying Terraform...'
+                    sh '''
+                        cd terraform
+                        terraform init
+                        terraform plan
+                        terraform apply -auto-approve
+                    '''
+                    echo 'Resource provisioning was Successful!'
                 }
             }
         }
@@ -69,6 +85,14 @@ pipeline {
                     }
                 }
             }
+        }
+    }
+    post {
+        success {
+            echo 'Pipeline succeeded!'
+        }
+        failure {
+            echo 'Pipeline failed!'
         }
     }
 }
