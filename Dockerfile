@@ -1,32 +1,28 @@
-# Use Node.js image to build the Angular app
-FROM node:18 AS build
+# Stage 1: Compile and Build angular codebase
+
+# Use official node image as the base image
+FROM node:latest as build
 
 # Set the working directory
-WORKDIR /app
+WORKDIR /usr/local/app
 
-# Configure DNS to avoid network issues
-RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf
+# Add the source code to app
+COPY ./ /usr/local/app/
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
+# Install all the dependencies
+RUN npm install
 
-# Install dependencies using npm ci for faster and more reliable installs
-RUN npm ci --prefer-offline
+# Generate the build of the application
+RUN npm run build
 
-# Copy the rest of the Angular project files
-COPY . .
 
-# Build the Angular application
-RUN npm run build --prod || (echo "Retrying npm build..." && npm run build --prod)
+# Stage 2: Serve app with nginx server
 
-# Use Nginx to serve the built Angular app
-FROM nginx:alpine
+# Use official nginx image as the base image
+FROM nginx:latest
 
-# Copy the Angular build files to Nginx's public folder
-COPY --from=build /app/dist/frontend /usr/share/nginx/html 
+# Copy the build output to replace the default nginx contents.
+COPY --from=build /usr/local/app/dist/* /usr/share/nginx/html
 
 # Expose port 80
 EXPOSE 80
-
-# Start Nginx server
-CMD ["nginx", "-g", "daemon off;"]
