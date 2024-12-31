@@ -26,6 +26,10 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh '''
+                    export NVM_DIR="$HOME/.nvm"
+                    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                    nvm use 18
+                    node -v
                     npx ng test --watch=false --browsers=ChromeHeadless
                 '''          
 }
